@@ -52,7 +52,7 @@ class TCTree(DirectedGraph):
         ve2nodes = {}
         self.index_components(ve2nodes)
 
-        # self.merge_polgons_and_bonds(ve2nodes)
+        self.merge_polgons_and_bonds(ve2nodes)
 
         # self.name_components()
 
@@ -243,3 +243,37 @@ class TCTree(DirectedGraph):
                 else:
                     ve2nodes[e].add(node)
 
+    def merge_polgons_and_bonds(self, ve2nodes):
+        to_remove = set()
+        for key, value in ve2nodes.items():
+            v1 = value[0]
+            v2 = value[1]
+            if v1.type != v2.type: continue
+            if v1.type == TCTreeNode.RIGID: continue
+
+            for e in v2.skeleton.get_edges():
+                if v2.skeleton.is_virtual(e):
+                    if e != key:
+                        v1.skeleton.add_virtual_edge(
+                            e.get_source(), e.get_target(), e.get_tag())
+                    else:
+                        v1.skeleton.add_edge(e.get_source(), e.get_target(
+                            ), v2.skeleton.get_original_edge(e))
+            
+            ves = set(v1.skeleton.get_virtual_edges())
+            for ve in ves:
+                if ve == key:
+                    v1.skeleton.remove_edge(ve)
+
+            for i_key, i_value in ve2nodes.items():
+                if v2 in i_value:
+                    i_value.remove(v2)
+                    i_value.add(v1)
+                    if len(i_value) == 1:
+                        to_remove.add(i_key)
+
+            self.remove_vertex(v2)
+
+        for ve in to_remove:
+            del ve2nodes[ve]
+            

@@ -50,7 +50,7 @@ class TCTree(DirectedGraph):
         self.classify_components()
 
         ve2nodes = {}
-        # self.index_components(ve2nodes)
+        self.index_components(ve2nodes)
 
         # self.merge_polgons_and_bonds(ve2nodes)
 
@@ -232,3 +232,14 @@ class TCTree(DirectedGraph):
                 n.type = TCTreeNode.POLYGON
             else:
                 n.type = TCTreeNode.RIGID
+
+    def index_components(self, ve2nodes):
+        for node in self.get_vertices():
+            for e in node.skeleton.get_virtual_edges():
+                if e.get_tag() not in ve2nodes.keys():
+                    nodes = set()
+                    nodes.add(node)
+                    ve2nodes[e] = nodes
+                else:
+                    ve2nodes[e].add(node)
+

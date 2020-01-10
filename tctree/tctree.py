@@ -2,15 +2,17 @@ import math
 from tctree.tcskeleton import TCSkeleton
 from dfs import low_and_desc, number, split_components
 from graph.directed_graph import DirectedGraph
-# from tctnode import TCTreeNode
+from tctnode import TCTreeNode
 
 TREE_EDGE = 1
+
 
 class TCTree(DirectedGraph):
 
     def __init__(self, graph, back_edge):
         self.graph = graph
         self.back_edge = back_edge
+        self.e2o = {}
 
     def construct(self):
         components = []
@@ -25,23 +27,23 @@ class TCTree(DirectedGraph):
         container["ASSIGNER_VIRTUAL_EDGES"] = assigned_virtual_edge_map
         container["HIDDEN_EDGES"] = is_hidden_map
 
-        tcskeleton = TCSkeleton(self.graph)
+        tcskeleton = TCSkeleton(self.graph, self.e2o)
         self.split_multitple_edges(
             tcskeleton, components, virtual_edge_map, assigned_virtual_edge_map, is_hidden_map)
         self.find_split_components(tcskeleton, components, virtual_edge_map,
                                    assigned_virtual_edge_map, is_hidden_map, self.back_edge.get_source(), container, self.back_edge.get_source())
-        print(components)
 
-        # ####
-        # for el in components:
-        #     node = TCTreeNode()
-        #     for e in el:
-        #         if virtual_edge_map[e]:
-        #             node.skeleton.add_virtual_edge(
-        #                 e.get_source(), e.get_sink())
-        #         else:
-        #             node.skeleton.add_edge(e.get_source(), e.get_sink())
-        #     self.add_vertex(node)
+        for el in components:
+            if len(components) <= 1:
+                continue
+            node = TCTreeNode()
+            for e in el:
+                if virtual_edge_map[e]:
+                    node.skeleton.add_virtual_edge(
+                        e.get_source(), e.get_target())
+                else:
+                    node.skeleton.add_edge(e.get_source(), e.target())
+            self.add_vertex(node)
 
         # self.classify_components()
 
@@ -83,14 +85,12 @@ class TCTree(DirectedGraph):
 
         meta["DFS_EDGE_COUNT"] = edge_count
 
-        split_comp_dfs = split_components.SplitComponents(self.graph, meta, 
-                                copied_ordered_adj_map, components, hm, vm, avm)
+        split_comp_dfs = split_components.SplitComponents(self.graph, meta,
+                                                          copied_ordered_adj_map, components, hm, vm, avm)
         split_comp_dfs.add_dfs_maps(number_dfs.parent_map, number_dfs.tree_arc_map,
-                                number_dfs.highpt_map, number_dfs.edge_type_map)
+                                    number_dfs.highpt_map, number_dfs.edge_type_map)
         split_comp_dfs.initialize()
         split_comp_dfs.start(root)
-
-        print(components)
 
     def order_adj_lists(self, graph, container):
         edges = graph.get_edges()
@@ -107,7 +107,7 @@ class TCTree(DirectedGraph):
                     phi = 3 * container["DFS_LOWPT1_NUM"][e.get_target()] + 2
             else:
                 phi = 3 * container["DFS_NUM"][e.get_target()] + 1
-            
+
             bucket[phi - 1].append(e)
 
         ordered_adj_map = {}

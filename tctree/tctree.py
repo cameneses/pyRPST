@@ -1,8 +1,8 @@
 import math
 from tctree.tcskeleton import TCSkeleton
+from tctree.tctnode import TCTreeNode
 from dfs import low_and_desc, number, split_components
 from graph.directed_graph import DirectedGraph
-from tctnode import TCTreeNode
 
 TREE_EDGE = 1
 
@@ -33,6 +33,8 @@ class TCTree(DirectedGraph):
         self.find_split_components(tcskeleton, components, virtual_edge_map,
                                    assigned_virtual_edge_map, is_hidden_map, self.back_edge.get_source(), container, self.back_edge.get_source())
 
+        
+
         for el in components:
             if len(components) <= 1:
                 continue
@@ -42,10 +44,20 @@ class TCTree(DirectedGraph):
                     node.skeleton.add_virtual_edge(
                         e.get_source(), e.get_target())
                 else:
-                    node.skeleton.add_edge(e.get_source(), e.target())
+                    node.skeleton.add_edge(e.get_source(), e.target(), self.e2o[e])
             self.add_vertex(node)
 
-        # self.classify_components()
+        self.classify_components()
+
+        ve2nodes = {}
+        # self.index_components(ve2nodes)
+
+        # self.merge_polgons_and_bonds(ve2nodes)
+
+        # self.name_components()
+
+        # self.construct_tree(ve2nodes)
+
 
     def create_edge_map(self, graph):
         edge_map = {}
@@ -204,4 +216,19 @@ class TCTree(DirectedGraph):
         return sorted_edges
 
     def classify_components(self):
-        pass
+        for n in self.get_vertices():
+            if n.skeleton.count_vertices() == 2:
+                n.type = TCTreeNode.BOND
+                continue
+
+            is_polygon = True
+            vs = n.skeleton.get_vertices()
+            for v in vs:
+                if len(n.skeleton.get_edges(v)) != 2:
+                    is_polygon = False
+                    break
+            
+            if is_polygon:
+                n.type = TCTreeNode.POLYGON
+            else:
+                n.type = TCTreeNode.RIGID

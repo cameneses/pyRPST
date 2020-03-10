@@ -191,6 +191,7 @@ class SplitComponents(DFS):
                     if len(self.edge_stack) > 0:
                         e = self.edge_stack[-1]
                     while (e != None) and (top_triple.num_a <= self.get_num(e.get_source())) and (
+                        top_triple.num_a <= self.get_num(e.get_target())) and (
                         self.get_num(e.get_source()) <= top_triple.num_h) and (
                             self.get_num(e.get_target()) <= top_triple.num_h):
 

@@ -1,4 +1,5 @@
 from dfs.dfs import DFS
+import uuid
 
 INVALID_NODE = None
 
@@ -251,6 +252,7 @@ class SplitComponents(DFS):
 
     def new_virtual_edge(self, component, v, w):
         virtual_edge = self.graph.add_virtual_edge(v, w)
+        virtual_edge.set_id(uuid.uuid1())
         self.update_edge_count(v, 1)
         self.update_edge_count(w, 1)
         self.virt_edge_map[virtual_edge] = True

@@ -10,6 +10,7 @@ TREE_EDGE = 1
 class TCTree(DirectedGraph):
 
     def __init__(self, graph, back_edge):
+        super().__init__()
         self.graph = graph
         self.back_edge = back_edge
         self.e2o = {}

@@ -277,3 +277,34 @@ class TCTree(DirectedGraph):
         for ve in to_remove:
             del ve2nodes[ve]
             
+    def construct_tree(self,ve2nodes,namescomponets):
+        tobeRoot = None
+        if len(self.get_vertices())==1:
+            tobeRoot = iterator.HasNextIterator(self.get_vertices()).next()
+        else:
+            tobeRoot= None
+            
+        visited = set()
+        for key, entry_1 in ve2nodes.items():
+            i = iterator.HasNextIterator(entry_1)
+            v1 = i.next()
+            v2 = i.next()
+            self.add_edge_abs(v1,v2)
+            if tobeRoot is None and  v1 not in visited:
+                if self.checkRoot(v1):
+                    tobeRoot = v1
+            visited.add(v1)
+            if tobeRoot is None and v2 not in visited:
+                if self.checkRoot(v2):
+                    tobeRoot = v2
+            visited.add(v2)
+		#// construct trivial fragments
+        for node in self.get_vertices():
+            for edge in node.getSkeleton.get_original_edges():
+                trivial = TCTreeNode()
+                trivial.type = node = TCTreeNode.TCType.get("TRIVIAL")
+                trivial.skeleton.add_edge_t(edge.get_source(), edge.get_target(), edge)
+                namescomponets[trivial] = edge
+                self.add_edge_abs(node,trivial)
+
+        self.reRoot(tobeRoot)

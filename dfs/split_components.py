@@ -160,7 +160,7 @@ class SplitComponents(DFS):
             edge_count_of_w == 2 and first_child_of_w != None and self.get_num(
                 first_child_of_w) > self.get_num(w)):
             e_a_b = []
-            if top_triple.a == v and self.parent_map[top_triple.b] == self.parent_map[top_triple.a]:
+            if top_triple.a == v and self.parent_map[top_triple.b] == top_triple.a:
                 self.ts_stack.pop()
                 if len(self.ts_stack) > 0:
                     top_triple = self.ts_stack[-1]

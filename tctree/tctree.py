@@ -277,6 +277,23 @@ class TCTree(DirectedGraph):
         for ve in to_remove:
             del ve2nodes[ve]
             
+    def name_components(self):
+        namescomponets = {}
+        Pc=0
+        Bc=0
+        Rc=0
+        for node in self.get_vertices():
+            if node.type==TCTreeNode.BOND:
+                Bc = Bc+1
+                namescomponets[node]=("B"+str(Bc))
+            if node.type==TCTreeNode.POLYGON:
+                Pc = Pc+1
+                namescomponets[node]=("P"+str(Pc))
+            if node.type==TCTreeNode.RIGID:
+                Rc = Rc+1
+                namescomponets[node]=("R"+str(Rc))
+        return namescomponets     
+    
     def construct_tree(self,ve2nodes,namescomponets):
         tobeRoot = None
         if len(self.get_vertices())==1:

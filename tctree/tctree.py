@@ -45,7 +45,10 @@ class TCTree(DirectedGraph):
                     node.skeleton.add_virtual_edge(
                         e.get_source(), e.get_target())
                 else:
-                    node.skeleton.add_edge(e.get_source(), e.target(), self.e2o[e])
+                    if e in self.e2o:
+                        node.skeleton.add_edge_t(e.get_source(), e.get_target(), self.e2o[e])
+                    else:
+                        node.skeleton.add_edge_t(e.get_source(), e.get_target(), None)
             self.add_vertex(node)
 
         self.classify_components()

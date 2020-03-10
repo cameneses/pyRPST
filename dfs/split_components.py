@@ -183,7 +183,7 @@ class SplitComponents(DFS):
 
                     if len(self.edge_stack) > 0:
                         e = self.edge_stack[-1]
-                        if self.is_same_edge(e, v, first_child_of_w):
+                        if self.is_same_edge(e, v, top_triple.b) or self.is_same_edge(e, v, first_child_of_w):
                             e_a_b.append(self.edge_stack.pop())
                 else:
                     top_triple = self.ts_stack.pop()

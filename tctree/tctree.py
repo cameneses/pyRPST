@@ -76,8 +76,7 @@ class TCTree(DirectedGraph):
     def find_split_components(self, skeleton, components, vm, avm, hm, be, meta, root):
         adj_map = self.create_node_map(skeleton)
         for v in skeleton.get_vertices():
-            adj = [e for e in skeleton.get_vertex_edges(v)]
-            adj_map[v] = adj
+            adj_map[v] = [e for e in skeleton.get_vertex_edges(v)]
 
         meta["DFS_ADJ_LISTS"] = adj_map
 
@@ -94,8 +93,8 @@ class TCTree(DirectedGraph):
         number_dfs.start(root)
 
         edge_count = {}
-        for node in self.graph.get_vertices():
-            edge_count[node] = len(self.graph.get_edges())
+        for node in skeleton.get_vertices():
+            edge_count[node] = len(skeleton.get_vertex_edges(node))
 
         meta["DFS_EDGE_COUNT"] = edge_count
 

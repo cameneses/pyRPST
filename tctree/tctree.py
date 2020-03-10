@@ -34,8 +34,6 @@ class TCTree(DirectedGraph):
         self.find_split_components(tcskeleton, components, virtual_edge_map,
                                    assigned_virtual_edge_map, is_hidden_map, self.back_edge.get_source(), container, self.back_edge.get_source())
 
-        
-
         for el in components:
             if len(components) <= 1:
                 continue
@@ -43,7 +41,7 @@ class TCTree(DirectedGraph):
             for e in el:
                 if virtual_edge_map[e]:
                     node.skeleton.add_virtual_edge(
-                        e.get_source(), e.get_target())
+                        e.get_source(), e.get_target(), e.get_id())
                 else:
                     if e in self.e2o:
                         node.skeleton.add_edge(e.get_source(), e.get_target(), self.e2o[e])

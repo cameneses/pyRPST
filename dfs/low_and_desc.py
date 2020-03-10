@@ -65,7 +65,7 @@ class LowAndDesc(DFS):
             else:
                 self.lowpt2_vertex_map[v] = self.lowpt2_vertex_map[w]
 
-            self.lowpt2_vertex_map[v] = self.lowpt1_num_map[w]
+            self.lowpt1_num_map[v] = self.lowpt1_num_map[w]
             self.lowpt1_vertex_map[v] = self.lowpt1_vertex_map[w]
 
         elif self.lowpt1_num_map[w] == self.lowpt1_num_map[v]:

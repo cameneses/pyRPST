@@ -3,10 +3,10 @@ class Edge:
     def __init__(self, source, target):
         self.source = source
         self.target = target
-    
+
     def get_source(self):
         return self.source
-    
+
     def get_target(self):
         return self.target
 
@@ -33,3 +33,15 @@ class Edge:
 
     def __str__(self):
         return "{} -> {}".format(self.source, self.target)
+
+    def set_id(self,idd):
+        self.id = idd
+
+    def get_id(self):
+        return self.id
+
+    def set_tag(self,tag):
+        self.tag = tag
+
+    def get_tag(self):
+        return self.tag

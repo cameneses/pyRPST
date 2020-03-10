@@ -1,4 +1,5 @@
 from dfs.dfs import DFS
+import uuid
 
 INVALID_NODE = None
 
@@ -160,7 +161,7 @@ class SplitComponents(DFS):
             edge_count_of_w == 2 and first_child_of_w != None and self.get_num(
                 first_child_of_w) > self.get_num(w)):
             e_a_b = []
-            if top_triple.a == v and self.parent_map[top_triple.b] == self.parent_map[top_triple.a]:
+            if top_triple.a == v and self.parent_map[top_triple.b] == top_triple.a:
                 self.ts_stack.pop()
                 if len(self.ts_stack) > 0:
                     top_triple = self.ts_stack[-1]
@@ -183,7 +184,7 @@ class SplitComponents(DFS):
 
                     if len(self.edge_stack) > 0:
                         e = self.edge_stack[-1]
-                        if self.is_same_edge(e, v, first_child_of_w):
+                        if self.is_same_edge(e, v, top_triple.b) or self.is_same_edge(e, v, first_child_of_w):
                             e_a_b.append(self.edge_stack.pop())
                 else:
                     top_triple = self.ts_stack.pop()
@@ -191,6 +192,7 @@ class SplitComponents(DFS):
                     if len(self.edge_stack) > 0:
                         e = self.edge_stack[-1]
                     while (e != None) and (top_triple.num_a <= self.get_num(e.get_source())) and (
+                        top_triple.num_a <= self.get_num(e.get_target())) and (
                         self.get_num(e.get_source()) <= top_triple.num_h) and (
                             self.get_num(e.get_target()) <= top_triple.num_h):
 
@@ -204,6 +206,10 @@ class SplitComponents(DFS):
                             e = self.edge_stack[-1]
                         else:
                             e = None
+                    
+                    virtual_edge = self.new_virtual_edge(component, top_triple.a, top_triple.b)  
+                    for e in component:
+                        self.assigned_virt_edge_map[e] = virtual_edge
 
                 if len(e_a_b) > 0:
                     e_a_b.append(virtual_edge)
@@ -246,6 +252,7 @@ class SplitComponents(DFS):
 
     def new_virtual_edge(self, component, v, w):
         virtual_edge = self.graph.add_virtual_edge(v, w)
+        virtual_edge.set_id(uuid.uuid1())
         self.update_edge_count(v, 1)
         self.update_edge_count(w, 1)
         self.virt_edge_map[virtual_edge] = True
@@ -322,7 +329,8 @@ class SplitComponents(DFS):
         for e in edges:
             adj = self.meta["DFS_ORDERED_ADJ_LISTS"][e.get_source()]
             if len(adj) > 0:
-                adj.remove(e)
+                if e in adj:
+                    adj.remove(e)
             try:
                 self.graph.remove_edge(e)
                 self.update_edge_count(e.get_source(), -1)

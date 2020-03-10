@@ -10,6 +10,7 @@ TREE_EDGE = 1
 class TCTree(DirectedGraph):
 
     def __init__(self, graph, back_edge):
+        super().__init__()
         self.graph = graph
         self.back_edge = back_edge
         self.e2o = {}
@@ -33,8 +34,6 @@ class TCTree(DirectedGraph):
         self.find_split_components(tcskeleton, components, virtual_edge_map,
                                    assigned_virtual_edge_map, is_hidden_map, self.back_edge.get_source(), container, self.back_edge.get_source())
 
-        
-
         for el in components:
             if len(components) <= 1:
                 continue
@@ -42,9 +41,12 @@ class TCTree(DirectedGraph):
             for e in el:
                 if virtual_edge_map[e]:
                     node.skeleton.add_virtual_edge(
-                        e.get_source(), e.get_target())
+                        e.get_source(), e.get_target(), e.get_id())
                 else:
-                    node.skeleton.add_edge(e.get_source(), e.target(), self.e2o[e])
+                    if e in self.e2o:
+                        node.skeleton.add_edge(e.get_source(), e.get_target(), self.e2o[e])
+                    else:
+                        node.skeleton.add_edge(e.get_source(), e.get_target(), None)
             self.add_vertex(node)
 
         self.classify_components()
@@ -74,8 +76,7 @@ class TCTree(DirectedGraph):
     def find_split_components(self, skeleton, components, vm, avm, hm, be, meta, root):
         adj_map = self.create_node_map(skeleton)
         for v in skeleton.get_vertices():
-            adj = [e for e in skeleton.get_vertex_edges(v)]
-            adj_map[v] = adj
+            adj_map[v] = [e for e in skeleton.get_vertex_edges(v)]
 
         meta["DFS_ADJ_LISTS"] = adj_map
 
@@ -92,8 +93,8 @@ class TCTree(DirectedGraph):
         number_dfs.start(root)
 
         edge_count = {}
-        for node in self.graph.get_vertices():
-            edge_count[node] = len(self.graph.get_edges())
+        for node in skeleton.get_vertices():
+            edge_count[node] = len(skeleton.get_vertex_edges(node))
 
         meta["DFS_EDGE_COUNT"] = edge_count
 
@@ -166,7 +167,6 @@ class TCTree(DirectedGraph):
 
     def new_component(self, skeleton, components, temp_comp, vm, avm, hm, s, t):
         for e in temp_comp:
-            print(e)
             skeleton.remove_edge(e)
             hm[e] = True
 

@@ -37,6 +37,7 @@ class RPST:
             target = e.get_target()
             edge = Edge(source, target)
             self.ne2oe[source] = target
+            self.normalized_graph.add_edge(self.ov2nv[e.get_source()], self.ov2nv[e.get_target()])
 
         src = Vertex("src")
         snk = Vertex("snk")

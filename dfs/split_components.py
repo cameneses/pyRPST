@@ -205,6 +205,10 @@ class SplitComponents(DFS):
                             e = self.edge_stack[-1]
                         else:
                             e = None
+                    
+                    virtual_edge = self.new_virtual_edge(component, top_triple.a, top_triple.b)  
+                    for e in component:
+                        self.assigned_virt_edge_map[e] = virtual_edge
 
                 if len(e_a_b) > 0:
                     e_a_b.append(virtual_edge)

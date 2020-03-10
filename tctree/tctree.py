@@ -170,7 +170,6 @@ class TCTree(DirectedGraph):
 
     def new_component(self, skeleton, components, temp_comp, vm, avm, hm, s, t):
         for e in temp_comp:
-            print(e)
             skeleton.remove_edge(e)
             hm[e] = True
 

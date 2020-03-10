@@ -322,7 +322,8 @@ class SplitComponents(DFS):
         for e in edges:
             adj = self.meta["DFS_ORDERED_ADJ_LISTS"][e.get_source()]
             if len(adj) > 0:
-                adj.remove(e)
+                if e in adj:
+                    adj.remove(e)
             try:
                 self.graph.remove_edge(e)
                 self.update_edge_count(e.get_source(), -1)

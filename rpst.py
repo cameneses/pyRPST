@@ -108,7 +108,6 @@ if __name__ == "__main__":
     y = Vertex("y")
     z = Vertex("z")
     t = Vertex("t")
-
     graph.add_vertex(s)
     graph.add_vertex(u)
     graph.add_vertex(v)
@@ -127,9 +126,6 @@ if __name__ == "__main__":
     rpst = RPST(graph)
     rpst.normalize_graph()
     rpst.generate_tctree()
-
-
-
 
 
 

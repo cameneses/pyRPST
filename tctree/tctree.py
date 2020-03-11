@@ -293,7 +293,7 @@ class TCTree(DirectedGraph):
                 Rc = Rc+1
                 namescomponets[node]=("R"+str(Rc))
         return namescomponets     
-    
+    ##add construct_tree
     def construct_tree(self,ve2nodes,namescomponets):
         tobeRoot = None
         if len(self.get_vertices())==1:

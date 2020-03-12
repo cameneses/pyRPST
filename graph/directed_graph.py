@@ -112,7 +112,12 @@ class DirectedGraph:
 #            if e.contains(v):
 #                edges.append(e)
 #        return edges
-
+    def get_vertex_edges2(self, v):
+        edges = []
+        for e,val in self.edges.items():
+            if v == e.get_source():
+                edges.append(val)
+        return edges
     def remove_edge(self, e):
         self.edges.remove(e)
 

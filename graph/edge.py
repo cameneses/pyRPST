@@ -31,7 +31,11 @@ class Edge:
             return self.source
         else:
             return None
-
+    def set_name(self,name):
+        self.name=name
+        
+    def get_name(self):
+        return self.name
     def contains(self, v):
         return self.has_target(v) or self.has_source(v)
 

@@ -51,3 +51,15 @@ class TCSkeleton(DirectedGraph):
         super().remove_edge(e)
 
     
+    def is_virtual(self,e):
+        if e in self.virtual_edges:
+            return True
+        else:
+            return False
+    def get_original_edge(self,e):
+        if e in self.e2o:
+            return self.e2o[e]
+        else:
+            return None
+    def get_original_edges(self,e):
+        return self.e2o.keys()

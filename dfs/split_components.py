@@ -214,6 +214,7 @@ class SplitComponents(DFS):
                 if len(e_a_b) > 0:
                     e_a_b.append(virtual_edge)
                     component = self.new_component(e_a_b)
+                    b=None
                     if top_triple.b == INVALID_NODE or (
                         first_child_of_w != None and self.is_same_edge(e_a_b[-1], v, first_child_of_w)):
                         b = first_child_of_w

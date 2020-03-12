@@ -14,7 +14,7 @@ class TCTree(DirectedGraph):
         self.graph = graph
         self.back_edge = back_edge
         self.e2o = {}
-
+        
     def construct(self):
         components = []
         virtual_edge_map = self.create_edge_map(self.graph)
@@ -251,8 +251,9 @@ class TCTree(DirectedGraph):
     def merge_polgons_and_bonds(self, ve2nodes):
         to_remove = set()
         for key, value in ve2nodes.items():
-            v1 = value[0]
-            v2 = value[1]
+            x = iter(value)
+            v1 = next(x)
+            v2 = next(x)
             if v1.type != v2.type: continue
             if v1.type == TCTreeNode.RIGID: continue
 
@@ -262,7 +263,7 @@ class TCTree(DirectedGraph):
                         v1.skeleton.add_virtual_edge(
                             e.get_source(), e.get_target(), e.get_tag())
                     else:
-                        v1.skeleton.add_edge(e.get_source(), e.get_target(
+                        v1.skeleton.add_edge_t(e.get_source(), e.get_target(
                             ), v2.skeleton.get_original_edge(e))
             
             ves = set(v1.skeleton.get_virtual_edges())

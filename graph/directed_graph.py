@@ -15,6 +15,8 @@ class DirectedGraph:
     # Receives a pair of vertex
 
     def add_edge(self, s, t):
+        self.vertices[s]=[]
+        self.vertices[t]=[]
         edge = Edge(s, t)
         self.edges.append(edge)
         self.start_vertices.append(s)

@@ -3,7 +3,7 @@ from tctree.tcskeleton import TCSkeleton
 from tctree.tctnode import TCTreeNode
 from dfs import low_and_desc, number, split_components
 from graph.directed_graph import DirectedGraph
-
+import uuid 
 TREE_EDGE = 1
 
 
@@ -44,9 +44,9 @@ class TCTree(DirectedGraph):
                         e.get_source(), e.get_target(), e.get_id())
                 else:
                     if e in self.e2o:
-                        node.skeleton.add_edge(e.get_source(), e.get_target(), self.e2o[e])
+                        node.skeleton.add_edge_t(e.get_source(), e.get_target(), self.e2o[e])
                     else:
-                        node.skeleton.add_edge(e.get_source(), e.get_target(), None)
+                        node.skeleton.add_edge_t(e.get_source(), e.get_target(), None)
             self.add_vertex(node)
 
         self.classify_components()

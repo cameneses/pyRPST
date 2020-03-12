@@ -1,8 +1,12 @@
 class Edge:
 
     def __init__(self, source, target):
-        self.source = source
-        self.target = target
+        self.source = ""
+        self.target = ""
+        self.set_vertices(source,target)
+        self.tag = ""
+        self.id = ""
+        self.name = ""
 
     def get_source(self):
         return self.source

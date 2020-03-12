@@ -7,8 +7,8 @@ Need to implement connects_vertex
 class DirectedGraph:
 
     def __init__(self):
-        self.edges = []
-        self.vertices = []
+        self.edges = {}
+        self.vertices = {}
         self.start_vertices = []
         self.terminal_vertices = []
 

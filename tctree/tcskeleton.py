@@ -6,13 +6,16 @@ class TCSkeleton(DirectedGraph):
         super().__init__()
         if graph:
             self.graph = graph
+            self.virtual_edges = []
             self.e2o = e2o
+            self.o2e = {}
             self.map_edges()
             self.copy_graph()
-        else: 
-            self.graph = []
-            self.e2o = []
-        self.virtual_edges = []
+        else:
+            self.graph =[]
+            self.virtual_edges = []
+            self.e2o =  {}
+            self.o2e =  {}
 
     def map_edges(self):
         for e in self.graph.get_edges():

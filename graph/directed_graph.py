@@ -101,10 +101,17 @@ class DirectedGraph:
 
     def get_vertex_edges(self, v):
         edges = []
-        for e in self.edges:
-            if e.contains(v):
-                edges.append(e)
+        print(v)
+        for e,val in self.edges.items():
+            if v == e.get_source() or v == e.get_target():
+                edges.append(val)
         return edges
+        
+#        edges = []
+#        for e in self.edges:
+#            if e.contains(v):
+#                edges.append(e)
+#        return edges
 
     def remove_edge(self, e):
         self.edges.remove(e)

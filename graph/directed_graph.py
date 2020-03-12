@@ -24,7 +24,13 @@ class DirectedGraph:
         return edge
 
     def add_vertex(self, v):
-        self.vertices.append(v)
+        if v is None:
+            return None
+        if self.contains(v):
+            return None
+        if v not in self.vertices:
+            self.vertices[v]=[]
+        return v
 
     def get_edge(self, s, t):
         if s not in self.vertices:

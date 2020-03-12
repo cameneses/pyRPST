@@ -239,12 +239,14 @@ class TCTree(DirectedGraph):
     def index_components(self, ve2nodes):
         for node in self.get_vertices():
             for e in node.skeleton.get_virtual_edges():
+                if e.get_tag()=="":
+                    continue
                 if e.get_tag() not in ve2nodes.keys():
                     nodes = set()
                     nodes.add(node)
-                    ve2nodes[e] = nodes
+                    ve2nodes[e.get_tag()] = nodes
                 else:
-                    ve2nodes[e].add(node)
+                    ve2nodes[e.get_tag()].add(node)
 
     def merge_polgons_and_bonds(self, ve2nodes):
         to_remove = set()

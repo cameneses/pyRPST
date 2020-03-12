@@ -30,7 +30,7 @@ class TCSkeleton(DirectedGraph):
             e.set_tag(tag)
         return e
 
-    def add_edge(self, v, w, o):
+    def add_edge_t(self, v, w, o):
         e = super().add_edge(v, w)
         if e != None:
             self.e2o[e] = o
@@ -38,8 +38,10 @@ class TCSkeleton(DirectedGraph):
         return e
 
     def copy_graph(self):
-        self.vertices = self.graph.get_vertices().copy()
-        self.edges = self.graph.get_edges().copy()
+        self.vertices = copy.copy(self.graph.get_vertices_t())
+        self.edges = copy.copy(self.graph.get_edges_t())
+#        self.vertices = self.graph.get_vertices().copy()
+#        self.edges = self.graph.get_edges().copy()
 
     def remove_edge(self, e):
         super().remove_edge(e)

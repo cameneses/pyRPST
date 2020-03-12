@@ -19,7 +19,8 @@ class TCSkeleton(DirectedGraph):
 
     def map_edges(self):
         for e in self.graph.get_edges():
-            se = self.add_edge(e.get_source(), e.get_target(), None)
+#            se = self.add_edge(e.get_source(), e.get_target(), None)
+            se = self.add_edge(e.get_source(), e.get_target())
             self.e2o[se] = e
 
     def add_virtual_edge(self, s, t, tag = None):

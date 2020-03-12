@@ -128,3 +128,38 @@ class DirectedGraph:
 
     def count_vertices(self):
         return len(self.vertices)
+    def conunt_edges(self):
+        return len(self.edges)
+    def contains(self,v):
+        if v in self.get_vertices():
+            return True
+        return False
+    def contains2(self,v):
+        if v in self.get_edges():
+            return True
+        return False
+    
+    def check_edge(self,ss,ts):
+        es = self.getEdgesWithSourcesAndTargets(ss, ts)
+        if len(es)>0:
+            i = iterator.HasNextIterator(es)
+            while i.has_next():
+                e = i.next()
+                if len(e.getSourceVertices())== len(ss) and len(e.getTargetVertices())==len(ts):
+                    return False
+        return True
+    def getEdgesWithSourcesAndTargets(self,ss,ts):
+        result = set()
+        for s in ss:
+            for t in ts:
+                result.union(self.getEdgesWithSourceAndTarget(s,t))
+        return result
+    def getEdgesWithSourceAndTarget(self,s,t):
+        result = set()
+        es = self.get_edges2(s)
+        i = iterator.HasNextIterator(es)
+        while i.has_next():
+            e = i.next()
+            if e.hasSource(s) and e.hasTarget(t):
+                result.add(e)
+        return result

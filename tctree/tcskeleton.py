@@ -1,5 +1,5 @@
 from graph.directed_graph import DirectedGraph
-
+import copy 
 class TCSkeleton(DirectedGraph):
 
     def __init__(self, graph = None, e2o = None):

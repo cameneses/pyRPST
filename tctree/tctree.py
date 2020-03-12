@@ -76,20 +76,23 @@ class TCTree(DirectedGraph):
     def find_split_components(self, skeleton, components, vm, avm, hm, be, meta, root):
         adj_map = self.create_node_map(skeleton)
         for v in skeleton.get_vertices():
-            adj_map[v] = [e for e in skeleton.get_vertex_edges(v)]
+            adj=[]
+            for e in skeleton.get_vertex_edges(v):
+                adj.append(e) 
+            adj_map[v] = adj
 
         meta["DFS_ADJ_LISTS"] = adj_map
 
-        low_and_desc_dfs = low_and_desc.LowAndDesc(self.graph, meta, adj_map)
+        low_and_desc_dfs = low_and_desc.LowAndDesc(skeleton, meta, adj_map)
         low_and_desc_dfs.start(root)
 
-        ordered_adj_map = self.order_adj_lists(self.graph, meta)
+        ordered_adj_map = self.order_adj_lists(skeleton, meta)
 
         copied_ordered_adj_map = {}
         for node in ordered_adj_map.keys():
             copied_ordered_adj_map[node] = ordered_adj_map[node].copy()
 
-        number_dfs = number.Number(self.graph, meta, copied_ordered_adj_map)
+        number_dfs = number.Number(skeleton, meta, copied_ordered_adj_map)
         number_dfs.start(root)
 
         edge_count = {}
@@ -98,7 +101,7 @@ class TCTree(DirectedGraph):
 
         meta["DFS_EDGE_COUNT"] = edge_count
 
-        split_comp_dfs = split_components.SplitComponents(self.graph, meta,
+        split_comp_dfs = split_components.SplitComponents(skeleton, meta,
                                                           copied_ordered_adj_map, components, hm, vm, avm)
         split_comp_dfs.add_dfs_maps(number_dfs.parent_map, number_dfs.tree_arc_map,
                                     number_dfs.highpt_map, number_dfs.edge_type_map)

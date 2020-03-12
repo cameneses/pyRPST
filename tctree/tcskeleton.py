@@ -35,7 +35,7 @@ class TCSkeleton(DirectedGraph):
         e = super().add_edge(v, w)
         if e != None:
             self.e2o[e] = o
-            self.e2o[o] = e
+            self.e2e[o] = e
         return e
 
     def copy_graph(self):

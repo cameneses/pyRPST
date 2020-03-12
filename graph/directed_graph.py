@@ -73,7 +73,13 @@ class DirectedGraph:
         return self.vertices
 
     def get_edges(self):
-        return self.edges
+        result = list(self.edges.keys())
+        re ={}
+        if result is None:
+            return re
+        else:
+            return result
+#        return self.edges
 
     def get_vertex_edges(self, v):
         edges = []

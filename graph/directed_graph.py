@@ -70,7 +70,14 @@ class DirectedGraph:
         return results
 
     def get_vertices(self):
-        return self.vertices
+        result = list(self.vertices.keys())
+        for i in result:
+            print(i)
+        if result is None:
+            return {}
+        else:
+            return result
+#        return self.vertices
 
     def get_edges(self):
         result = list(self.edges.keys())

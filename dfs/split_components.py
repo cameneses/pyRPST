@@ -123,7 +123,7 @@ class SplitComponents(DFS):
 
             if len(self.edge_stack) > 0:
                 e = self.edge_stack[-1]
-                if self.is_same_edge(e, w, lowpt1_w):
+                if self.is_same_edge(e, v, lowpt1_w):
                     e = self.edge_stack.pop()
                     el = [e, virtual_edge]
                     component = self.new_component(el)

@@ -227,7 +227,7 @@ class TCTree(DirectedGraph):
             is_polygon = True
             vs = n.skeleton.get_vertices()
             for v in vs:
-                if len(n.skeleton.get_edges(v)) != 2:
+                if len(n.skeleton.get_vertex_edges(v)) != 2:
                     is_polygon = False
                     break
             

@@ -44,6 +44,10 @@ class TCSkeleton(DirectedGraph):
 #        self.edges = self.graph.get_edges().copy()
 
     def remove_edge(self, e):
+        self.virtual_edges.remove(e)
+        if e in self.o2e:
+            self.o2e.pop(self.e2o.get(e))
+            self.e2o.pop(e)
         super().remove_edge(e)
 
     

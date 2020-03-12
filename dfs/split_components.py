@@ -47,7 +47,7 @@ class SplitComponents(DFS):
         self.ts_stack.append(self.EOS)
         super().start(root)
 
-        if len(self.edge_stack) == 0:
+        if len(self.edge_stack) > 0:
             self.new_component(self.edge_stack)
 
     def pre_traverse(self, e, w, is_tree_edge):

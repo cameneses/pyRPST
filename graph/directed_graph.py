@@ -78,7 +78,11 @@ class DirectedGraph:
         else:
             return result
 #        return self.vertices
-
+    def get_vertices_t(self):
+        return self.vertices
+    def get_edges_t(self):
+        return self.edges
+    
     def get_edges(self):
         result = list(self.edges.keys())
         re ={}

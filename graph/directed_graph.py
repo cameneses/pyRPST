@@ -119,7 +119,12 @@ class DirectedGraph:
                 edges.append(val)
         return edges
     def remove_edge(self, e):
-        self.edges.remove(e)
+        if e is None:
+            return None
+        if self.contains2(e):
+            return self.edges.pop(e)
+        else:
+            return None
 
     def count_vertices(self):
         return len(self.vertices)

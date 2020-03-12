@@ -22,7 +22,19 @@ class DirectedGraph:
         self.start_vertices.append(s)
         self.terminal_vertices.append(t)
         return edge
-
+    def add_edge_abs(self, s, t):
+        ss = []
+        ss.append(s)
+        ts = []
+        ts.append(t)
+        if self.check_edge(ss,ts)==False:
+            return None
+        
+        edge = Edge.Edge(s, t)
+        self.edges[edge] = edge
+        self.start_vertices.append(s)
+        self.terminal_vertices.append(t)
+        return edge
     def add_vertex(self, v):
         if v is None:
             return None

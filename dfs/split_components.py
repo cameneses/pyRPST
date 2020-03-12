@@ -157,9 +157,9 @@ class SplitComponents(DFS):
         if len(adj_of_w) > 0:
             first_child_of_w = adj_of_w[-1].get_other_vertex(w)
         edge_count_of_w = self.meta["DFS_EDGE_COUNT"][w]
-        while (v != self.dfs_root) and (top_triple != None and top_triple.a == v) or (
-            edge_count_of_w == 2 and first_child_of_w != None and self.get_num(
-                first_child_of_w) > self.get_num(w)):
+        while (v != self.dfs_root) and (((top_triple != None) and (top_triple.a == v)) or (
+            (edge_count_of_w == 2) and (first_child_of_w != None) and (self.get_num(
+                first_child_of_w) > self.get_num(w)))):
             e_a_b = []
             if top_triple.a == v and self.parent_map[top_triple.b] == top_triple.a:
                 self.ts_stack.pop()

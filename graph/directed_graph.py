@@ -80,6 +80,13 @@ class DirectedGraph:
         else:
             return result
 #        return self.edges
+    def get_edges2(self, v):
+        if v is None:
+            return None
+        if  v in self.vertices:
+            return self.vertices[v]
+        else:
+            return None
 
     def get_vertex_edges(self, v):
         edges = []

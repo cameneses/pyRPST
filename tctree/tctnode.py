@@ -11,3 +11,7 @@ class TCTreeNode:
     def __init__(self):
         self.type = TCTreeNode.UNDEFINED
         self.skeleton = TCSkeleton()
+    def getType(self):
+        return self.type
+    def getSkeleton(self):
+        return self.skeleton

@@ -29,7 +29,8 @@ class TCSkeleton(DirectedGraph):
         if tag:
             e.set_tag(tag)
         return e
-
+    def get_virtual_edges(self):
+        return self.virtual_edges
     def add_edge_t(self, v, w, o):
         e = super().add_edge(v, w)
         if e != None:

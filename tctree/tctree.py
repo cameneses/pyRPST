@@ -258,7 +258,7 @@ class TCTree(DirectedGraph):
 
             for e in v2.skeleton.get_edges():
                 if v2.skeleton.is_virtual(e):
-                    if e != key:
+                    if e.get_tag() != key:
                         v1.skeleton.add_virtual_edge(
                             e.get_source(), e.get_target(), e.get_tag())
                     else:
@@ -267,7 +267,9 @@ class TCTree(DirectedGraph):
             
             ves = set(v1.skeleton.get_virtual_edges())
             for ve in ves:
-                if ve == key:
+                if ve.get_tag() == key:
+                    v1.skeleton.remove_edge(ve)
+                if ve.get_tag() =="":
                     v1.skeleton.remove_edge(ve)
 
             for i_key, i_value in ve2nodes.items():

@@ -18,7 +18,7 @@ class DirectedGraph:
         self.vertices[s]=[]
         self.vertices[t]=[]
         edge = Edge(s, t)
-        self.edges.append(edge)
+        self.edges[edge]=edge
         self.start_vertices.append(s)
         self.terminal_vertices.append(t)
         return edge
@@ -125,7 +125,16 @@ class DirectedGraph:
             return self.edges.pop(e)
         else:
             return None
-
+    def remove_vertex(self,v):
+        if v is None:
+            return None
+        if self.contains(v):
+            es = self.get_edges2(v)
+            for i in es:
+                i.remove_vertex(v)
+            self.vertices.pop(v)
+            return v
+        return None
     def count_vertices(self):
         return len(self.vertices)
     def conunt_edges(self):

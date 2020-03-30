@@ -4,6 +4,7 @@ from tctree.tctnode import TCTreeNode
 from dfs import low_and_desc, number, split_components
 from graph.directed_graph import DirectedGraph
 import uuid 
+from collections import deque
 TREE_EDGE = 1
 
 
@@ -11,6 +12,7 @@ class TCTree(DirectedGraph):
 
     def __init__(self, graph, back_edge):
         super().__init__()
+        self.root = None
         self.graph = graph
         self.back_edge = back_edge
         self.e2o = {}
@@ -300,36 +302,57 @@ class TCTree(DirectedGraph):
             if node.type==TCTreeNode.RIGID:
                 Rc = Rc+1
                 namescomponets[node]=("R"+str(Rc))
-        return namescomponets     
-    ##add construct_tree
+        return namescomponets   
+
+
+    def re_root(self, v):
+        if (v == None or not (v in self.get_vertices())) or v == self.root:
+            return self.root
+        self.root = v
+
+        queue = deque()
+        visited = set()
+        queue.append(self.root)
+        visited.add(self.root)
+
+        while queue:
+            c = queue.pop()
+            adj_vertices = [x for x in self.get_adjacents(c) if x not in visited]
+            for a in adj_vertices:
+                self.remove_edges(self.get_edges(c, a))
+                self.remove_edges(self.get_edges(a, c))
+                visited.add(a)
+                queue.append(a)
+        
+        return self.root
+
+    def check_root(self, v):
+        return self.back_edge in v.skeleton.get_original_edges()
+
     def construct_tree(self,ve2nodes,namescomponets):
-        tobeRoot = None
-        if len(self.get_vertices())==1:
-            tobeRoot = iterator.HasNextIterator(self.get_vertices()).next()
-        else:
-            tobeRoot= None
+        to_be_root = self.get_vertices()[0] if len(self.get_vertices()) == 1  else None
             
         visited = set()
-        for key, entry_1 in ve2nodes.items():
-            i = iterator.HasNextIterator(entry_1)
+        for entry in ve2nodes.keys():
+            i = iter(ve2nodes[entry])
             v1 = i.next()
             v2 = i.next()
-            self.add_edge_abs(v1,v2)
-            if tobeRoot is None and  v1 not in visited:
-                if self.checkRoot(v1):
-                    tobeRoot = v1
+            self.add_edge(v1, v2)
+            if to_be_root == None and v1 not in visited:
+                if self.check_root(v1):
+                    to_be_root = v1
             visited.add(v1)
-            if tobeRoot is None and v2 not in visited:
-                if self.checkRoot(v2):
-                    tobeRoot = v2
+            if to_be_root == None and v2 not in visited:
+                if self.check_root(v2):
+                    to_be_root = v2
             visited.add(v2)
-		#// construct trivial fragments
+
         for node in self.get_vertices():
-            for edge in node.getSkeleton.get_original_edges():
+            for edge in node.get_skeleton.get_original_edges():
                 trivial = TCTreeNode()
-                trivial.type = node = TCTreeNode.TCType.get("TRIVIAL")
+                trivial.type = TCTreeNode.TRIVIAL
                 trivial.skeleton.add_edge_t(edge.get_source(), edge.get_target(), edge)
                 namescomponets[trivial] = edge
                 self.add_edge_abs(node,trivial)
 
-        self.reRoot(tobeRoot)
+        self.re_root(to_be_root)

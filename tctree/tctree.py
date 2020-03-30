@@ -58,9 +58,9 @@ class TCTree(DirectedGraph):
 
         self.merge_polgons_and_bonds(ve2nodes)
 
-        # self.name_components()
+        components = self.name_components()
 
-        # self.construct_tree(ve2nodes)
+        self.construct_tree(ve2nodes, components)
 
 
     def create_edge_map(self, graph):
@@ -335,8 +335,8 @@ class TCTree(DirectedGraph):
         visited = set()
         for entry in ve2nodes.keys():
             i = iter(ve2nodes[entry])
-            v1 = i.next()
-            v2 = i.next()
+            v1 = next(i)
+            v2 = next(i)
             self.add_edge(v1, v2)
             if to_be_root == None and v1 not in visited:
                 if self.check_root(v1):

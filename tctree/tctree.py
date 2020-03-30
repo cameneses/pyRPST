@@ -62,6 +62,9 @@ class TCTree(DirectedGraph):
 
         self.construct_tree(ve2nodes, components)
 
+        for n in self.get_vertices():
+            print(n)
+
 
     def create_edge_map(self, graph):
         edge_map = {}
@@ -348,7 +351,7 @@ class TCTree(DirectedGraph):
             visited.add(v2)
 
         for node in self.get_vertices():
-            for edge in node.get_skeleton.get_original_edges():
+            for edge in node.get_skeleton().get_original_edges():
                 trivial = TCTreeNode()
                 trivial.type = TCTreeNode.TRIVIAL
                 trivial.skeleton.add_edge_t(edge.get_source(), edge.get_target(), edge)

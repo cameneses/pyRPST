@@ -62,5 +62,6 @@ class TCSkeleton(DirectedGraph):
             return self.e2o[e]
         else:
             return None
-    def get_original_edges(self,e):
+            
+    def get_original_edges(self):
         return self.e2o.keys()

@@ -15,33 +15,35 @@ class DirectedGraph:
     # Receives a pair of vertex
 
     def add_edge(self, s, t):
-        self.vertices[s]=[]
-        self.vertices[t]=[]
+        self.vertices[s] = []
+        self.vertices[t] = []
         edge = Edge(s, t)
-        self.edges[edge]=edge
+        self.edges[edge] = edge
         self.start_vertices.append(s)
         self.terminal_vertices.append(t)
         return edge
+
     def add_edge_abs(self, s, t):
         ss = []
         ss.append(s)
         ts = []
         ts.append(t)
-        if self.check_edge(ss,ts)==False:
+        if self.check_edge(ss, ts) == False:
             return None
-        
-        edge = Edge.Edge(s, t)
+
+        edge = Edge(s, t)
         self.edges[edge] = edge
         self.start_vertices.append(s)
         self.terminal_vertices.append(t)
         return edge
+
     def add_vertex(self, v):
         if v is None:
             return None
         if self.contains(v):
             return None
         if v not in self.vertices:
-            self.vertices[v]=[]
+            self.vertices[v] = []
         return v
 
     def get_edge(self, s, t):
@@ -78,23 +80,26 @@ class DirectedGraph:
         else:
             return result
 #        return self.vertices
+
     def get_vertices_t(self):
         return self.vertices
+
     def get_edges_t(self):
         return self.edges
-    
+
     def get_edges(self):
         result = list(self.edges.keys())
-        re ={}
+        re = {}
         if result is None:
             return re
         else:
             return result
 #        return self.edges
+
     def get_edges2(self, v):
         if v is None:
             return None
-        if  v in self.vertices:
+        if v in self.vertices:
             return self.vertices[v]
         else:
             return None
@@ -102,11 +107,11 @@ class DirectedGraph:
     def get_vertex_edges(self, v):
         edges = []
         print(v)
-        for e,val in self.edges.items():
+        for e, val in self.edges.items():
             if v == e.get_source() or v == e.get_target():
                 edges.append(val)
         return edges
-        
+
 #        edges = []
 #        for e in self.edges:
 #            if e.contains(v):
@@ -114,10 +119,11 @@ class DirectedGraph:
 #        return edges
     def get_vertex_edges2(self, v):
         edges = []
-        for e,val in self.edges.items():
+        for e, val in self.edges.items():
             if v == e.get_source():
                 edges.append(val)
         return edges
+
     def remove_edge(self, e):
         if e is None:
             return None
@@ -125,7 +131,8 @@ class DirectedGraph:
             return self.edges.pop(e)
         else:
             return None
-    def remove_vertex(self,v):
+
+    def remove_vertex(self, v):
         if v is None:
             return None
         if self.contains(v):
@@ -135,40 +142,54 @@ class DirectedGraph:
             self.vertices.pop(v)
             return v
         return None
+
     def count_vertices(self):
         return len(self.vertices)
+
     def conunt_edges(self):
         return len(self.edges)
-    def contains(self,v):
+
+    def contains(self, v):
         if v in self.get_vertices():
             return True
         return False
-    def contains2(self,v):
+
+    def contains2(self, v):
         if v in self.get_edges():
             return True
         return False
-    
-    def check_edge(self,ss,ts):
+
+    def check_edge(self, ss, ts):
         es = self.getEdgesWithSourcesAndTargets(ss, ts)
-        if len(es)>0:
-            i = iterator.HasNextIterator(es)
-            while i.has_next():
-                e = i.next()
-                if len(e.getSourceVertices())== len(ss) and len(e.getTargetVertices())==len(ts):
+        for e in es:
+            if len(e.getSourceVertices()) == len(ss) and len(e.getTargetVertices()) == len(ts):
                     return False
         return True
-    def getEdgesWithSourcesAndTargets(self,ss,ts):
+
+        # if len(es) > 0:
+        #     i = iterator.HasNextIterator(es)
+        #     while i.has_next():
+        #         e = i.next()
+        #         if len(e.getSourceVertices()) == len(ss) and len(e.getTargetVertices()) == len(ts):
+        #             return False
+        # return True
+
+    def getEdgesWithSourcesAndTargets(self, ss, ts):
         result = set()
         for s in ss:
             for t in ts:
-                result.union(self.getEdgesWithSourceAndTarget(s,t))
+                result.union(self.getEdgesWithSourceAndTarget(s, t))
         return result
-    def getEdgesWithSourceAndTarget(self,s,t):
+
+    def getEdgesWithSourceAndTarget(self, s, t):
         result = set()
         es = self.get_edges2(s)
-        i = iterator.HasNextIterator(es)
-        while i.has_next():
-            e = i.next()
-            if e.hasSource(s) and e.hasTarget(t):
+        for e in es:
+            if e.has_source(s) and e.has_target(t):
                 result.add(e)
+        # i = iterator.HasNextIterator(es)
+        # while i.has_next():
+        #     e = i.next()
+        #     if e.hasSource(s) and e.hasTarget(t):
+        #         result.add(e)
         return result

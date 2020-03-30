@@ -13,5 +13,10 @@ class TCTreeNode:
         self.skeleton = TCSkeleton()
     def getType(self):
         return self.type
-    def getSkeleton(self):
+    def get_skeleton(self):
         return self.skeleton
+    def __str__(self):
+        edges = ''
+        for e in self.skeleton.get_edges():
+            edges += '{} -> {} '.format(e.get_source(), e.get_target())
+        return edges

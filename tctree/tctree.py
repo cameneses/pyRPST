@@ -52,14 +52,15 @@ class TCTree(DirectedGraph):
             self.add_vertex(node)
 
         self.classify_components()
-
         ve2nodes = {}
         self.index_components(ve2nodes)
-
-        self.merge_polgons_and_bonds(ve2nodes)
-
+        self.merge_polgons_and_bonds(ve2nodes)        
         components = self.name_components()
-
+        print(len(ve2nodes))
+        for key, value in ve2nodes.items():
+            x = iter(value)
+            v1 = next(x)
+            v2 = next(x)
         self.construct_tree(ve2nodes, components)
 
         for n in self.get_vertices():
@@ -252,7 +253,7 @@ class TCTree(DirectedGraph):
                     ve2nodes[e.get_tag()] = nodes
                 else:
                     ve2nodes[e.get_tag()].add(node)
-
+        print("")
     def merge_polgons_and_bonds(self, ve2nodes):
         to_remove = set()
         for key, value in ve2nodes.items():
@@ -267,8 +268,8 @@ class TCTree(DirectedGraph):
                     if e.get_tag() != key:
                         v1.skeleton.add_virtual_edge(
                             e.get_source(), e.get_target(), e.get_tag())
-                    else:
-                        v1.skeleton.add_edge_t(e.get_source(), e.get_target(
+                else:
+                    v1.skeleton.add_edge_t(e.get_source(), e.get_target(
                             ), v2.skeleton.get_original_edge(e))
             
             ves = set(v1.skeleton.get_virtual_edges())
@@ -330,6 +331,10 @@ class TCTree(DirectedGraph):
         return self.root
 
     def check_root(self, v):
+        print(v.skeleton.get_original_edges())
+        print(str(self.back_edge.get_source().name)+"->"+str(self.back_edge.get_target().name))
+        for i in v.skeleton.get_original_edges():
+            print(i)
         return self.back_edge in v.skeleton.get_original_edges()
 
     def construct_tree(self,ve2nodes,namescomponets):

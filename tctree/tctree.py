@@ -5,6 +5,8 @@ from dfs import low_and_desc, number, split_components
 from graph.directed_graph import DirectedGraph
 import uuid 
 from collections import deque
+from anytree import Node, RenderTree, AsciiStyle, PostOrderIter
+import copy
 TREE_EDGE = 1
 
 
@@ -41,7 +43,7 @@ class TCTree(DirectedGraph):
                 continue
             node = TCTreeNode()
             for e in el:
-                if virtual_edge_map[e]:
+                if virtual_edge_map[e] and (e.get_source().name !="src" and e.get_target().name!="snk"):
                     node.skeleton.add_virtual_edge(
                         e.get_source(), e.get_target(), e.get_id())
                 else:
@@ -56,16 +58,12 @@ class TCTree(DirectedGraph):
         self.index_components(ve2nodes)
         self.merge_polgons_and_bonds(ve2nodes)        
         components = self.name_components()
-        print(len(ve2nodes))
-        for key, value in ve2nodes.items():
-            x = iter(value)
-            v1 = next(x)
-            v2 = next(x)
-        self.construct_tree(ve2nodes, components)
-
-        for n in self.get_vertices():
-            print(n)
-
+        tree = self.construct_tree(ve2nodes, components)
+        for pre, fill, node in RenderTree(tree):
+            print("%s%s" % (pre, node.name))  
+        for node in PostOrderIter(tree):
+            print(node.name)
+        print("end")
 
     def create_edge_map(self, graph):
         edge_map = {}
@@ -173,7 +171,7 @@ class TCTree(DirectedGraph):
             temp_comp.append(last_edge)
             self.new_component(skeleton, components, temp_comp, vm,
                                avm, hm, last_edge.get_source(), last_edge.get_target())
-
+        print("")
     def new_component(self, skeleton, components, temp_comp, vm, avm, hm, s, t):
         for e in temp_comp:
             skeleton.remove_edge(e)
@@ -299,12 +297,15 @@ class TCTree(DirectedGraph):
         for node in self.get_vertices():
             if node.type==TCTreeNode.BOND:
                 Bc = Bc+1
+                node.set_name("B"+str(Bc))
                 namescomponets[node]=("B"+str(Bc))
             if node.type==TCTreeNode.POLYGON:
                 Pc = Pc+1
+                node.set_name("P"+str(Pc))
                 namescomponets[node]=("P"+str(Pc))
             if node.type==TCTreeNode.RIGID:
                 Rc = Rc+1
+                node.set_name("R"+str(Rc))
                 namescomponets[node]=("R"+str(Rc))
         return namescomponets   
 
@@ -325,6 +326,7 @@ class TCTree(DirectedGraph):
             for a in adj_vertices:
                 self.remove_edges(self.get_edges(c, a))
                 self.remove_edges(self.get_edges(a, c))
+                self.add_edge_abs(c,a)
                 visited.add(a)
                 queue.append(a)
         
@@ -335,6 +337,8 @@ class TCTree(DirectedGraph):
         print(str(self.back_edge.get_source().name)+"->"+str(self.back_edge.get_target().name))
         for i in v.skeleton.get_original_edges():
             print(i)
+            if self.back_edge.get_source().name == i.get_source().name and self.back_edge.get_target().name == i.get_target().name:
+                return True
         return self.back_edge in v.skeleton.get_original_edges()
 
     def construct_tree(self,ve2nodes,namescomponets):
@@ -345,7 +349,7 @@ class TCTree(DirectedGraph):
             i = iter(ve2nodes[entry])
             v1 = next(i)
             v2 = next(i)
-            self.add_edge(v1, v2)
+            self.add_edge_abs(v1, v2)
             if to_be_root == None and v1 not in visited:
                 if self.check_root(v1):
                     to_be_root = v1
@@ -359,8 +363,29 @@ class TCTree(DirectedGraph):
             for edge in node.get_skeleton().get_original_edges():
                 trivial = TCTreeNode()
                 trivial.type = TCTreeNode.TRIVIAL
+                trivial.set_name=(node.name)
                 trivial.skeleton.add_edge_t(edge.get_source(), edge.get_target(), edge)
-                namescomponets[trivial] = edge
+                namescomponets[trivial] = ""
                 self.add_edge_abs(node,trivial)
-
-        self.re_root(to_be_root)
+        
+        root= Node("P1")
+        Q = []
+        Q.append("P1")
+        map_node = {}
+        map_node["P1"]=root
+        while len(Q)>0:
+            tag = Q.pop(0)
+            for node in self.get_edges():
+                if node.get_source().get_name() == tag:
+                    if namescomponets[node.get_target()] !="":
+                        Q.append(namescomponets[node.get_target()])
+                        r = Node(namescomponets[node.get_target()], parent=map_node[node.get_source().get_name()])
+                        map_node[namescomponets[node.get_target()]] = r
+                        
+                    else:
+                        marc = Node(node.get_target(), parent=map_node[node.get_source().get_name()])
+        return root
+         
+             #   marc = Node("Marc", parent=udo)
+            #nt("Source: "+str(node.get_source().get_name())+str("-")+str(node.get_source()) +" Target: "+str(node.name)+str("-")+str(node.get_target()))
+        #self.re_root(to_be_root)

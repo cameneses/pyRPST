@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-
+import copy
 WHITE = 0
 GRAY = 1
 BLACK = 2
@@ -64,7 +64,7 @@ class DFS:
         self.dfs_num_map[v] = self.dfs_num
         self.node_state_map[v] = GRAY
 
-        adj_v = self.adj_map[v]
+        adj_v = copy.copy(self.adj_map[v])
 
         self.pre_visit(v, self.dfs_num_map[v])
 

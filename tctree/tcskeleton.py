@@ -17,11 +17,13 @@ class TCSkeleton(DirectedGraph):
             self.e2o =  {}
             self.o2e =  {}
 
+
     def map_edges(self):
         for e in self.graph.get_edges():
 #            se = self.add_edge(e.get_source(), e.get_target(), None)
             se = self.add_edge(e.get_source(), e.get_target())
-            self.e2o[se] = e
+            self.e2o[copy.copy(se)] = copy.copy(e)
+        
 
     def add_virtual_edge(self, s, t, tag = None):
         e = super().add_edge(s, t)
@@ -34,8 +36,8 @@ class TCSkeleton(DirectedGraph):
     def add_edge_t(self, v, w, o):
         e = super().add_edge(v, w)
         if e != None:
-            self.e2o[e] = o
-            self.o2e[o] = e
+            self.e2o[copy.copy(e)] = copy.copy(o)
+            self.o2e[copy.copy(o)] = copy.copy(e)
         return e
 
     def copy_graph(self):

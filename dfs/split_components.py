@@ -65,8 +65,8 @@ class SplitComponents(DFS):
                 component = self.new_component(el)
                 virtual_edge = self.new_virtual_edge(component, w, v)
 
-                for e in component:
-                    self.assigned_virt_edge_map[e] = virtual_edge
+                for edge in component:
+                    self.assigned_virt_edge_map[edge] = virtual_edge
                 self.make_tree_edge(virtual_edge, w, v)
             else:
                 self.edge_stack.append(e)
@@ -78,10 +78,13 @@ class SplitComponents(DFS):
             edge_to_push = self.assigned_virt_edge_map[e]
             while self.hidden_map[edge_to_push]:
                 edge_to_push = self.assigned_virt_edge_map[edge_to_push]
-                self.edge_stack.append(edge_to_push)
+            #Revisar si es correcta la identación que tenia.
+            self.edge_stack.append(edge_to_push)
         else:
             self.edge_stack.append(e)
-
+        print("e: "+str(e))
+        print("v: "+str(v))
+        print("w: "+str(w))
         self.check_type_2(e, v, w)
         self.check_type_1(e, v, w)
         
@@ -106,6 +109,7 @@ class SplitComponents(DFS):
             self.parent_map[v] != self.dfs_root or self.num_not_visited_tree_edges[v] > 0)
         if cond1 and cond2 and cond3:
             lowpt1_w = self.meta["DFS_LOWPT1_VERTEX"][w]
+            print("edge_backtrack: "+str(edge_backtrack))
             component = self.new_component([])
             num_w = self.get_num(w)
             h = num_w + self.get_num_desc(w) - 1
@@ -113,6 +117,11 @@ class SplitComponents(DFS):
                 e = self.edge_stack[-1]
             while len(self.edge_stack) > 0 and ((num_w <= self.get_num(e.get_source()) and self.get_num(e.get_source()) <= h) or (num_w <= self.get_num(e.get_target()) and self.get_num(e.get_target()) <= h)):
                 e = self.edge_stack.pop()
+                print("edge_backtrack: "+str(edge_backtrack))
+                print("e: "+str(e))
+                print("component")
+                for ii in component:
+                    print(ii)
                 component = self.add_to_component([e], component)
                 if len(self.edge_stack) > 0:
                     e = self.edge_stack[-1]
@@ -175,6 +184,12 @@ class SplitComponents(DFS):
                         self.get_num(first_child_of_w) > self.get_num(w)):
                     el = [self.edge_stack.pop()]
                     el.append(self.edge_stack.pop())
+                    print("el")
+                    for iii in el:
+                        print(iii)
+                    print("component")
+                    for ii in component:
+                        print(ii)
                     self.add_to_component(el, component)
                     virtual_edge = self.new_virtual_edge(
                         component, v, first_child_of_w)
@@ -213,6 +228,9 @@ class SplitComponents(DFS):
 
                 if len(e_a_b) > 0:
                     e_a_b.append(virtual_edge)
+                    print("e_a_b")
+                    for ii in e_a_b:
+                        print(ii)
                     component = self.new_component(e_a_b)
                     b=None
                     if top_triple.b == INVALID_NODE or (
@@ -252,6 +270,7 @@ class SplitComponents(DFS):
         return component
 
     def new_virtual_edge(self, component, v, w):
+        asd = w
         virtual_edge = self.graph.add_virtual_edge(v, w)
         virtual_edge.set_id(uuid.uuid1())
         self.update_edge_count(v, 1)
@@ -279,6 +298,10 @@ class SplitComponents(DFS):
                 last_removed = self.ts_stack.pop()
                 if last_removed.num_h > y:
                     y = last_removed.num_h
+                ts_len = len(self.ts_stack)
+                ts_not_empty = ts_len > 0
+                top_different_EOS = self.ts_stack[ts_len - 1] != self.EOS
+                num_a_greater = self.ts_stack[ts_len -1].num_a > self.get_l1_num(w)
 
             if last_removed == None:
                 num_h = self.get_num(w) + self.get_num_desc(w) - 1
@@ -293,10 +316,9 @@ class SplitComponents(DFS):
             self.ts_stack.append(item_to_push)
             self.ts_stack.append(self.EOS)
 
-            ts_not_empty = ts_len > 0
-            top_different_EOS = self.ts_stack[ts_len - 1] != self.EOS
-            num_a_greater = self.ts_stack[ts_len -
-                                          1].num_a > self.get_l1_num(w)
+            #ts_not_empty = ts_len > 0
+            #top_different_EOS = self.ts_stack[ts_len - 1] != self.EOS
+            #num_a_greater = self.ts_stack[ts_len -1].num_a > self.get_l1_num(w)
 
         else:
             ts_len = len(self.ts_stack)
@@ -309,7 +331,8 @@ class SplitComponents(DFS):
                 last_removed = self.ts_stack.pop()
                 if last_removed.num_h > y:
                     y = last_removed.num_h
-
+                
+                ts_len = len(self.ts_stack)
                 ts_not_empty = ts_len > 0
                 top_different_EOS = self.ts_stack[ts_len - 1] != self.EOS
                 num_a_greater = self.ts_stack[ts_len -

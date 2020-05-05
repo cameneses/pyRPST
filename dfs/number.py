@@ -13,7 +13,6 @@ class Number(DFS):
         self.lowpt1_num_map = {}
         self.lowpt2_num_map = {}
         self.num_vertices = -1
-
         self.initialize()
 
     def initialize(self):
@@ -33,8 +32,7 @@ class Number(DFS):
         self.num_vertices = self.graph.count_vertices()
 
     def pre_visit(self, v, dfs_number):
-        self.num_v_map[v] = self.num_vertices - \
-            self.meta["DFS_NUM_DESC"][v] + 1
+        self.num_v_map[v] = self.num_vertices - self.meta["DFS_NUM_DESC"][v] + 1
         self.num_tree_edges_map[v] = 0
 
     def pre_traverse(self, e, w, is_tree_edge):

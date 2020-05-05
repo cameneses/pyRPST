@@ -57,13 +57,13 @@ class TCTree(DirectedGraph):
         ve2nodes = {}
         self.index_components(ve2nodes)
         self.merge_polgons_and_bonds(ve2nodes)        
-        components = self.name_components()
-        tree = self.construct_tree(ve2nodes, components)
+        compo = self.name_components()
+        tree = self.construct_tree(ve2nodes, compo)
         for pre, fill, node in RenderTree(tree):
             print("%s%s" % (pre, node.name))  
         for node in PostOrderIter(tree):
             print(node.name)
-        print("end")
+        print(len(components))
 
     def create_edge_map(self, graph):
         edge_map = {}
@@ -94,7 +94,7 @@ class TCTree(DirectedGraph):
 
         copied_ordered_adj_map = {}
         for node in ordered_adj_map.keys():
-            copied_ordered_adj_map[node] = ordered_adj_map[node].copy()
+            copied_ordered_adj_map[node] = copy.copy(ordered_adj_map[node])
 
         number_dfs = number.Number(skeleton, meta, copied_ordered_adj_map)
         number_dfs.start(root)
@@ -147,7 +147,7 @@ class TCTree(DirectedGraph):
         edges = self.sort_consecutive_edges(skeleton)
         temp_comp = []
         last_edge, current_edge = None, None
-        #temp_comp_size = 0
+        temp_comp_size = 0
         for e in edges:
             current_edge = e
             if (last_edge):
@@ -156,18 +156,19 @@ class TCTree(DirectedGraph):
                 equal_s_t = current_edge.get_source() == last_edge.get_target()
                 equal_t_s = last_edge.get_source() == current_edge.get_target()
 
-                if equal_source and equal_target or equal_s_t and equal_t_s:
+                if (equal_source and equal_target) or (equal_s_t and equal_t_s):
                     temp_comp.append(last_edge)
-                    # temp_comp_size += 1
+                    temp_comp_size += 1
                 else:
-                    if len(temp_comp) > 0:
+                    if temp_comp_size > 0:
                         temp_comp.append(last_edge)
                         self.new_component(skeleton, components, temp_comp, vm,
                                            avm, hm, last_edge.get_source(), last_edge.get_target())
                         temp_comp = []
+                        temp_comp_size=0
             last_edge = current_edge
 
-        if len(temp_comp) > 0:
+        if temp_comp_size > 0:
             temp_comp.append(last_edge)
             self.new_component(skeleton, components, temp_comp, vm,
                                avm, hm, last_edge.get_source(), last_edge.get_target())
@@ -188,13 +189,13 @@ class TCTree(DirectedGraph):
 
     def sort_consecutive_edges(self, skeleton):
         indices = {}
-        count = 1
-        for v in self.graph.get_vertices():
+        count = 0
+        for v in skeleton.get_vertices():
             indices[v] = count
             count += 1
 
-        edges = self.graph.get_edges()
-        bucket = [[] for i in range(len(self.graph.get_vertices()))]
+        edges = skeleton.get_edges()
+        bucket = [[] for i in range(len(skeleton.get_vertices()))]
 
         for e in edges:
             i = min(indices[e.get_target()], indices[e.get_source()])
@@ -204,14 +205,20 @@ class TCTree(DirectedGraph):
         for l in bucket:
             emap = {}
             for edge in l:
-                i = indices[e.get_target()] + indices[e.get_source()]
-
+                i = indices[edge.get_source()] + indices[edge.get_target()]
+                el = []
                 if not i in emap.keys():
+                    el = None
+                else:
+                    el = emap[i]
+                #if not i in emap.keys():
+                if el == None:
                     el = []
                     el.append(edge)
                     emap[i] = el
                 else:
-                    emap[i].append(e)
+                    el.append(edge)
+                    #emap[i].append(e)
                 # if i in emap.keys():
                 #     emap[i].append(e)
                 # else:
@@ -219,7 +226,8 @@ class TCTree(DirectedGraph):
                 #     emap[i] = el
                 #     emap[i].append(e)
             for el in emap.values():
-                sorted_edges += el
+                if el !=None:
+                    sorted_edges += el
         return sorted_edges
 
     def classify_components(self):
@@ -365,14 +373,14 @@ class TCTree(DirectedGraph):
                 trivial.type = TCTreeNode.TRIVIAL
                 trivial.set_name=(node.name)
                 trivial.skeleton.add_edge_t(edge.get_source(), edge.get_target(), edge)
-                namescomponets[trivial] = ""
+                namescomponets[trivial] = edge.get_name()
                 self.add_edge_abs(node,trivial)
         
-        root= Node("P1")
+        root= Node(to_be_root.name)
         Q = []
-        Q.append("P1")
+        Q.append(to_be_root.name)
         map_node = {}
-        map_node["P1"]=root
+        map_node[to_be_root.name]=root
         while len(Q)>0:
             tag = Q.pop(0)
             for node in self.get_edges():
@@ -388,4 +396,4 @@ class TCTree(DirectedGraph):
          
              #   marc = Node("Marc", parent=udo)
             #nt("Source: "+str(node.get_source().get_name())+str("-")+str(node.get_source()) +" Target: "+str(node.name)+str("-")+str(node.get_target()))
-        #self.re_root(to_be_root)
+        self.re_root(to_be_root)

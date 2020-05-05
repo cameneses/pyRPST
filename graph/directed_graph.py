@@ -73,8 +73,8 @@ class DirectedGraph:
 
     def get_vertices(self):
         result = list(self.vertices.keys())
-        for i in result:
-            print(i)
+        #for i in result:
+        #    print(i)
         if result is None:
             return {}
         else:
@@ -106,7 +106,6 @@ class DirectedGraph:
 
     def get_vertex_edges(self, v):
         edges = []
-        print(v)
         for e, val in self.edges.items():
             if v == e.get_source() or v == e.get_target():
                 edges.append(val)

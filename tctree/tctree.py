@@ -58,13 +58,13 @@ class TCTree(DirectedGraph):
         self.index_components(ve2nodes)
         self.merge_polgons_and_bonds(ve2nodes)        
         compo = self.name_components()
-        tree = self.construct_tree(ve2nodes, compo)
+        tree,map_node = self.construct_tree(ve2nodes, compo)
+        print(len(components))
         for pre, fill, node in RenderTree(tree):
             print("%s%s" % (pre, node.name))  
         for node in PostOrderIter(tree):
             print(node.name)
-        print(len(components))
-
+        return tree,map_node
     def create_edge_map(self, graph):
         edge_map = {}
         for e in graph.get_edges():
@@ -150,7 +150,7 @@ class TCTree(DirectedGraph):
         temp_comp_size = 0
         for e in edges:
             current_edge = e
-            if (last_edge):
+            if last_edge != None:
                 equal_source = current_edge.get_source() == last_edge.get_source()
                 equal_target = current_edge.get_target() == last_edge.get_target()
                 equal_s_t = current_edge.get_source() == last_edge.get_target()
@@ -198,7 +198,7 @@ class TCTree(DirectedGraph):
         bucket = [[] for i in range(len(skeleton.get_vertices()))]
 
         for e in edges:
-            i = min(indices[e.get_target()], indices[e.get_source()])
+            i = min(indices[e.get_source()],indices[e.get_target()])
             bucket[i].append(e)
 
         sorted_edges = []
@@ -371,7 +371,7 @@ class TCTree(DirectedGraph):
             for edge in node.get_skeleton().get_original_edges():
                 trivial = TCTreeNode()
                 trivial.type = TCTreeNode.TRIVIAL
-                trivial.set_name=(node.name)
+                trivial.set_name=edge.get_name()
                 trivial.skeleton.add_edge_t(edge.get_source(), edge.get_target(), edge)
                 namescomponets[trivial] = edge.get_name()
                 self.add_edge_abs(node,trivial)
@@ -379,20 +379,36 @@ class TCTree(DirectedGraph):
         root= Node(to_be_root.name)
         Q = []
         Q.append(to_be_root.name)
+        Qr = []
+        Qr.append(to_be_root.name)
         map_node = {}
         map_node[to_be_root.name]=root
         while len(Q)>0:
             tag = Q.pop(0)
             for node in self.get_edges():
-                if node.get_source().get_name() == tag:
+                if node.get_source().get_name() == tag and node.get_target().get_name() not in Qr:
                     if namescomponets[node.get_target()] !="":
                         Q.append(namescomponets[node.get_target()])
+                        Qr.append(namescomponets[node.get_target()])
                         r = Node(namescomponets[node.get_target()], parent=map_node[node.get_source().get_name()])
                         map_node[namescomponets[node.get_target()]] = r
                         
                     else:
                         marc = Node(node.get_target(), parent=map_node[node.get_source().get_name()])
-        return root
+                        map_node[namescomponets[node.get_target()]] = marc
+                if node.get_target().get_name() == tag and node.get_source().get_name() not in Qr:
+                    if namescomponets[node.get_source()] !="":
+                        Q.append(namescomponets[node.get_source()])
+                        Qr.append(namescomponets[node.get_source()])
+                        r = Node(namescomponets[node.get_source()], parent=map_node[node.get_target().get_name()])
+                        map_node[namescomponets[node.get_source()]] = r
+                        
+                    else:
+                        marc = Node(node.get_source(), parent=map_node[node.get_target().get_name()])
+                        map_node[namescomponets[node.get_source()]] = marc
+        for pre, fill, node in RenderTree(root):
+            print("%s%s" % (pre, node.name))  
+        return [root,map_node]
          
              #   marc = Node("Marc", parent=udo)
             #nt("Source: "+str(node.get_source().get_name())+str("-")+str(node.get_source()) +" Target: "+str(node.name)+str("-")+str(node.get_target()))
